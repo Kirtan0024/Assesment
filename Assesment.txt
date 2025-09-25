@@ -1,0 +1,140 @@
+                                            Assessment 3
+                                   Hotel Reservation System                                   
+
+Design a Python class HotelReservation that simulates a simple hotel room booking
+system. It should include the following features:
+➔ Room Booking:
+◆ Prompt user for name, contact number, and number of nights.
+◆ Display room types:
+● Standard: ₹2000/night
+● Deluxe: ₹3500/night
+● Suite: ₹5000/night
+◆ Allow the user to select a room type and calculate total cost.
+➔ Payment & Confirmation:
+◆ Ask for confirmation of the booking and process payment.
+◆ Generate a unique booking ID for each reservation.
+➔ Menu Options:
+◆ View Booking
+◆ Cancel Booking (Only allowed before check-in)
+◆ Exit
+➔ Constraints:
+◆ Contact number must be 10 digits.
+◆ Only one active booking per user.
+
+
+
+Ans:
+
+import random
+
+class HotelReservation:
+    def __init__(self):
+        self.bookings = {}  # Stores active bookings with contact as key
+        self.room_types = {
+            "1": ("Standard", 2000),
+            "2": ("Deluxe", 3500),
+            "3": ("Suite", 5000)
+        }
+
+    def generate_booking_id(self):
+        return "HR" + str(random.randint(1000, 9999))
+
+    def book_room(self):
+        name = input("Enter your name: ")
+        contact = input("Enter your 10-digit contact number: ")
+
+        # Validate contact number
+        if not (contact.isdigit() and len(contact) == 10):
+            print("❌ Invalid contact number. Must be 10 digits.")
+            return
+
+        # Check if user already has a booking
+        if contact in self.bookings:
+            print(⚠️ You already have an active booking. Cancel it first.")
+            return
+
+        try:
+            nights = int(input("Enter number of nights: "))
+        except ValueError:
+            print("❌ Invalid input. Nights should be a number.")
+            return
+
+        # Show room types
+        print("\nAvailable Room Types:")
+        for key, value in self.room_types.items():
+            print(f"{key}. {value[0]} - ₹{value[1]}/night")
+
+        choice = input("Select room type (1/2/3): ")
+        if choice not in self.room_types:
+            print("❌ Invalid choice.")
+            return
+
+        room_name, price = self.room_types[choice]
+        total_cost = price * nights
+        print(f"\nYou selected {room_name} for {nights} night(s).")
+        print(f"Total cost = ₹{total_cost}")
+
+        confirm = input("Confirm booking? (yes/no): ").lower()
+        if confirm != "yes":
+            print("Booking cancelled.")
+            return
+
+        booking_id = self.generate_booking_id()
+        self.bookings[contact] = {
+            "Name": name,
+            "Contact": contact,
+            "Room Type": room_name,
+            "Nights": nights,
+            "Total Cost": total_cost,
+            "Booking ID": booking_id
+        }
+
+        print(f"\n✅ Booking confirmed! Your Booking ID is {booking_id}\n")
+
+    def view_booking(self):
+        contact = input("Enter your 10-digit contact number: ")
+
+        if contact in self.bookings:
+            print("\n📌 Your Booking Details:")
+            for key, value in self.bookings[contact].items():
+                print(f"{key}: {value}")
+        else:
+            print("❌ No active booking found for this contact.")
+
+    def cancel_booking(self):
+        contact = input("Enter your 10-digit contact number: ")
+
+        if contact in self.bookings:
+            del self.bookings[contact]
+            print("✅ Booking cancelled successfully.")
+        else:
+            print("❌ No active booking found for this contact.")
+
+    def menu(self):
+        while True:
+            print("\n====== Hotel Reservation System ======")
+            print("1. Book Room")
+            print("2. View Booking")
+            print("3. Cancel Booking")
+            print("4. Exit")
+
+            choice = input("Enter your choice (1-4): ")
+
+            if choice == "1":
+                self.book_room()
+            elif choice == "2":
+                self.view_booking()
+            elif choice == "3":
+                self.cancel_booking()
+            elif choice == "4":
+                print("👋 Thank you for using Hotel Reservation System. Goodbye!")
+                break
+            else:
+                print("❌ Invalid choice. Please try again.")
+
+
+# Run the system
+if __name__ == "__main__":
+    system = HotelReservation()
+    system.menu()
+
