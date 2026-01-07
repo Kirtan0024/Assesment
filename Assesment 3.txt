@@ -1,0 +1,270 @@
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.43 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> drop database Ass;
+Query OK, 1 row affected (0.10 sec)
+
+mysql> create database Ass;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass;
+Database changed
+mysql> create table users(user_id int primary key auto_increment, email varchar(100), signup_date date);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> describe users;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| user_id     | int          | NO   | PRI | NULL    | auto_increment |
+| email       | varchar(100) | YES  |     | NULL    |                |
+| signup_date | date         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> create table logins(user_id int, login_date date, foreign key(user_id) references users(user_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> create table logins(user_id int, login_date date, foreign key(user_id) references users(user_id));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> describe logins;
++------------+------+------+-----+---------+-------+
+| Field      | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| user_id    | int  | YES  | MUL | NULL    |       |
+| login_date | date | YES  |     | NULL    |       |
++------------+------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> create table feature_usage(user_id int, feature_name varchar(100), timestamp datetime, foreign key(user_id) references users(user_id));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> describe Feature_usage;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| user_id      | int          | YES  | MUL | NULL    |       |
+| feature_name | varchar(100) | YES  |     | NULL    |       |
+| timestamp    | datetime     | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select login_date, count(distinct user_id) as dau from logins group  login_date;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'login_date' at line 1
+mysql> select Login_date, count(distinct user_id) as dau from logins group  login_date;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'login_date' at line 1
+mysql> select login_date, count(distinct user_id) as dau from logins group by login_date;
+Empty set (0.01 sec)
+
+mysql> select feature_name, (count(distinct user_id) / (select count(*) from users))
+    -> * 100 as adoption_rate from feature_usage group by feature_name;
+Empty set (0.00 sec)
+
+mysql> select u.user_id, f.feature_name, datediff(f.timestamp, u.signup_date)
+    -> as days_took from users u join feature_usage f on u.user_id = f.user_id group by u.user_id, f.feature_name;
+ERROR 1055 (42000): Expression #3 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'ass.f.timestamp' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select u.user_id, f.feature_name, datediff(min(f.timestamp), u.signup_date) as days_took
+    -> from users u join feature_usage f on u.user_id = f.user_id group by u.user_id, f.feature_name;
+Empty set (0.00 sec)
+
+mysql> drop table if exists feature_usage;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> drop table if exists logins;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop table if exists users;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table users(user_id int primary key auto_increment, email varchar(100), signup_date date);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> describe users;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| user_id     | int          | NO   | PRI | NULL    | auto_increment |
+| email       | varchar(100) | YES  |     | NULL    |                |
+| signup_date | date         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> create table logins(user_id int, login_date date, foreign key(user_id) references users(user_id));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> descrive users;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'descrive users' at line 1
+mysql> descgive users;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'descgive users' at line 1
+mysql> describe users;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| user_id     | int          | NO   | PRI | NULL    | auto_increment |
+| email       | varchar(100) | YES  |     | NULL    |                |
+| signup_date | date         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> create table feature_usage(user_id int, feature_name varchar(100), timestamp datetime,
+    -> foreign key(user_id) references users(user_id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> describe feature_usege;
+ERROR 1146 (42S02): Table 'ass.feature_usege' doesn't exist
+mysql> insert into users(email, signup_date) values ('aman@example.com', '2023-10-01'), ('riya@test.com', '2023-10-02'),
+    -> ('raj@demo.com', '2023-10-05'), ('sneha@mail.com', '2023-10-10');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into feature_usage(user_id, feature_name, timestamp) values (1, 'dashboard', '2023-10-02 10:00:00'),
+    -> (1, 'reports', '2023-10-02 10:15:00'), (2, 'dashboard', '2023-10-02 11:00:00'), (3, 'settings', '2023-10-06 09:30:00'), (1, 'dashboard', '2023-10-03 14:00:00');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from feature_usage;
++---------+--------------+---------------------+
+| user_id | feature_name | timestamp           |
++---------+--------------+---------------------+
+|       1 | dashboard    | 2023-10-02 10:00:00 |
+|       1 | reports      | 2023-10-02 10:15:00 |
+|       2 | dashboard    | 2023-10-02 11:00:00 |
+|       3 | settings     | 2023-10-06 09:30:00 |
+|       1 | dashboard    | 2023-10-03 14:00:00 |
++---------+--------------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql> select u.user_id, f.feature_name, datediff(min(f.timestamp), u.signup_date) as days_took
+    -> from users u join feature_usage f on u.user_id = f.user_id
+    -> group by u.user_id, u.signup_date, f.feature_name
+    ->
+    ->
+    -> ;
++---------+--------------+-----------+
+| user_id | feature_name | days_took |
++---------+--------------+-----------+
+|       1 | dashboard    |         1 |
+|       1 | reports      |         1 |
+|       2 | dashboard    |         0 |
+|       3 | settings     |         1 |
++---------+--------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> select feature_name, count(*) as usage_count
+    -> from feature_usge
+    -> group by feature_name
+    -> order by usage_count desc;
+ERROR 1146 (42S02): Table 'ass.feature_usge' doesn't exist
+mysql> select feature_name, count(*) as usage_count
+    -> from feature_usage
+    -> group by feature_name
+    -> order by usage_count desc;
++--------------+-------------+
+| feature_name | usage_count |
++--------------+-------------+
+| dashboard    |           3 |
+| reports      |           1 |
+| settings     |           1 |
++--------------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select (count(distinct l.user_id) / (select count(*) from users)) * 100 as retention_rat
+    -> from users u
+    -> join logins l on u.user_id = l.user_id where datediff
+    -> ^C
+mysql> l.login_date, u.signup_date) = 7;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'l.login_date, u.signup_date) = 7' at line 1
+mysql> select (count(distinct l.user_id) / (select count(*) from users)) * 100 as retention_rate
+    -> from users u
+    -> join logins l on u.user_id = l.user_id where datediff
+    -> (l.login_date, u.signup_date) = 7;
++----------------+
+| retention_rate |
++----------------+
+|         0.0000 |
++----------------+
+1 row in set (0.01 sec)
+
+mysql> insert into feature_usage(user_id, feature_name, timestamp) values
+    -> (1, 'Stroe', '2023-10-02 12:00:00'),
+    -> (1, 'printer', '2023-10-02 12:30:00'),
+    -> (1, 'share', '2023-10-02 13:00:00'),
+    -> (1, 'chatgpt', '2023-10-02 13:15:00');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select user_id, date(timestamp) as usage_date, count(*) as usage_count
+    -> from feature_usage group by user_id, date(timestamp)
+    -> having usage_count > 5;
++---------+------------+-------------+
+| user_id | usage_date | usage_count |
++---------+------------+-------------+
+|       1 | 2023-10-02 |           6 |
++---------+------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select user_id, avg(datediff(login_date, prev_login)) as avg_gap_days
+    -> from (select user_id, login_date,
+    -> lag(login_date) over (partition by user_id order by login_date) as prev_login
+    -> from logins ) as temp_table
+    -> where prev_login is not null group by user_id;
+Empty set (0.02 sec)
+
+mysql> insert into logins(user_id, login_date) values
+    -> (1, '2023-10-01'), (1, '2023-10-05'), (1, '2023-10-10'),(2, '2023-10-02'), (2, '2023-10-03');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select user_id, avg(datediff(login_date, prev_login)) as avg_gap_days
+    -> from (select user_id, login_date,
+    -> lag(login_date) over (partition by user_id order by login_date) as prev_login
+    -> from logins ) as temp_table
+    -> where prev_login is not null group by user_id;
++---------+--------------+
+| user_id | avg_gap_days |
++---------+--------------+
+|       1 |       4.5000 |
+|       2 |       1.0000 |
++---------+--------------+
+2 rows in set (0.00 sec)
+
+mysql> ^C
+mysql> select f.feature_name, count(*) as usage_count from feature_usage f
+    -> join users u on f.user_id = u.user_id where datediff(f.timestamp, u.signup_date) <= 7
+    -> group by f.feature_name order by usage_count desc limit 1;
++--------------+-------------+
+| feature_name | usage_count |
++--------------+-------------+
+| dashboard    |           3 |
++--------------+-------------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) as never_logged_in from users u
+    -> left join logins l on u.user_id = l.user_id where l.user_id is null;
++-----------------+
+| never_logged_in |
++-----------------+
+|               2 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> select (select count(*) from feature_usage) / (select count(*) from logins)
+    -> avg_features_per_login;
++------------------------+
+| avg_features_per_login |
++------------------------+
+|                 1.8000 |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql>
